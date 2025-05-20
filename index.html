@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ticketeer - Simple Ticketing Tool</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <title>Ticketeer - Ticketing Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
@@ -21,11 +21,6 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
     .container {
       max-width: 800px;
       margin: 2rem auto;
@@ -35,21 +30,11 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     }
 
-    .intro {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .intro h2 {
-      font-size: 1.5rem;
-      color: #4f46e5;
-    }
-
     .buttons {
       display: flex;
-      flex-wrap: wrap;
       gap: 1rem;
-      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
     }
 
     .button {
@@ -67,25 +52,40 @@
       background-color: #4338ca;
     }
 
-    .test-button {
-      margin-top: 3rem;
-      display: block;
+    .form {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ccc;
+    }
+
+    .form input, .form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .form button {
+      align-self: flex-start;
       background-color: #10b981;
     }
 
-    .test-button:hover {
+    .form button:hover {
       background-color: #059669;
     }
 
-    footer {
-      margin-top: 4rem;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #aaa;
+    .success-message {
+      margin-top: 1rem;
+      color: #10b981;
+      font-weight: 600;
     }
   </style>
 
-  <!-- Google Analytics (only basic GA4) -->
+  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y2FSSMG5XM"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -102,26 +102,54 @@
   </header>
 
   <div class="container">
-    <div class="intro">
-      <h2>Manage tickets like a pro</h2>
-      <p>Create, assign and resolve support tickets with ease.</p>
-    </div>
-
     <div class="buttons">
-      <button class="button">➕ New Ticket</button>
+      <button class="button" id="newTicketBtn">➕ New Ticket</button>
       <button class="button">📂 My Tickets</button>
       <button class="button">📊 Reports</button>
       <button class="button">⚙️ Settings</button>
     </div>
 
-    <button class="button test-button" onclick="gtag('event', 'test_click', { 'button_label': 'Test Button' });">
+    <div class="form" id="ticketForm">
+      <input type="text" id="ticketTitle" placeholder="Ticket title" required />
+      <textarea id="ticketDescription" placeholder="Describe the issue..." rows="4" required></textarea>
+      <button class="button" onclick="submitTicket()">Save Ticket</button>
+      <div class="success-message" id="ticketSuccess"></div>
+    </div>
+
+    <!-- Test knop voor GA4 -->
+    <button class="button" style="margin-top: 3rem; background: #10b981;" onclick="gtag('event', 'test_click', { 'button_label': 'Test Button' });">
       🧪 Click me to test GA4 Event
     </button>
   </div>
 
-  <footer>
-    &copy; 2025 Ticketeer Inc. | Prototype design
-  </footer>
+  <script>
+    const newTicketBtn = document.getElementById('newTicketBtn');
+    const ticketForm = document.getElementById('ticketForm');
+    const ticketSuccess = document.getElementById('ticketSuccess');
+
+    newTicketBtn.addEventListener('click', () => {
+      ticketForm.style.display = 'flex';
+      ticketSuccess.textContent = '';
+    });
+
+    function submitTicket() {
+      const title = document.getElementById('ticketTitle').value.trim();
+      const desc = document.getElementById('ticketDescription').value.trim();
+      
+      if (!title || !desc) {
+        alert('Please fill out all fields.');
+        return;
+      }
+
+      // Simuleer opslaan
+      ticketSuccess.textContent = '✅ Ticket saved! (not really, but you get the idea 😉)';
+      
+      // Reset form
+      document.getElementById('ticketTitle').value = '';
+      document.getElementById('ticketDescription').value = '';
+      ticketForm.style.display = 'none';
+    }
+  </script>
 
 </body>
 </html>
