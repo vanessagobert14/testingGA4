@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GA4 Test Page</title>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXX'); // Replace this with your GA4 ID
+    </script>
+  </head>
+  <body>
+    <h1>Hello, Google Analytics!</h1>
+    <button onclick="gtag('event', 'test_click', { 'button_label': 'Test Button' });">
+      Click me to trigger a GA4 event
+    </button>
+  </body>
+</html>
