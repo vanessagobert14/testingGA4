@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ticketeer - Ticketing Tool</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -52,7 +52,7 @@
       background-color: #4338ca;
     }
 
-    .form {
+    .form, .ticket-details {
       display: none;
       flex-direction: column;
       gap: 1rem;
@@ -61,7 +61,7 @@
       border-top: 1px solid #ccc;
     }
 
-    .form input, .form textarea {
+    input, textarea {
       width: 100%;
       padding: 0.75rem;
       border: 1px solid #ccc;
@@ -69,13 +69,23 @@
       font-size: 1rem;
     }
 
-    .form button {
-      align-self: flex-start;
-      background-color: #10b981;
+    .ticket-list {
+      margin-top: 2rem;
     }
 
-    .form button:hover {
-      background-color: #059669;
+    .ticket-item {
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ticket-buttons {
+      display: flex;
+      gap: 0.5rem;
     }
 
     .success-message {
@@ -83,9 +93,19 @@
       color: #10b981;
       font-weight: 600;
     }
+
+    .ticket-details h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .ticket-details p {
+      background: #f1f5f9;
+      padding: 1rem;
+      border-radius: 8px;
+    }
   </style>
 
-  <!-- Google Analytics -->
+  <!-- Google Analytics test -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y2FSSMG5XM"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -116,6 +136,13 @@
       <div class="success-message" id="ticketSuccess"></div>
     </div>
 
+    <div class="ticket-list" id="ticketList"></div>
+
+    <div class="ticket-details" id="ticketDetails">
+      <h3 id="detailTitle"></h3>
+      <p id="detailDescription"></p>
+    </div>
+
     <!-- Test knop voor GA4 -->
     <button class="button" style="margin-top: 3rem; background: #10b981;" onclick="gtag('event', 'test_click', { 'button_label': 'Test Button' });">
       🧪 Click me to test GA4 Event
@@ -126,6 +153,22 @@
     const newTicketBtn = document.getElementById('newTicketBtn');
     const ticketForm = document.getElementById('ticketForm');
     const ticketSuccess = document.getElementById('ticketSuccess');
+    const ticketList = document.getElementById('ticketList');
+    const ticketDetails = document.getElementById('ticketDetails');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailDescription = document.getElementById('detailDescription');
+
+    let tickets = [];
+
+    function loadTickets() {
+      const stored = localStorage.getItem('tickets');
+      tickets = stored ? JSON.parse(stored) : [];
+      renderTickets();
+    }
+
+    function saveTickets() {
+      localStorage.setItem('tickets', JSON.stringify(tickets));
+    }
 
     newTicketBtn.addEventListener('click', () => {
       ticketForm.style.display = 'flex';
@@ -141,14 +184,57 @@
         return;
       }
 
-      // Simuleer opslaan
-      ticketSuccess.textContent = '✅ Ticket saved! (not really, but you get the idea 😉)';
-      
-      // Reset form
+      const ticket = {
+        id: Date.now(),
+        title,
+        description: desc
+      };
+
+      tickets.push(ticket);
+      saveTickets();
+      renderTickets();
+
+      ticketSuccess.textContent = '✅ Ticket saved!';
+      ticketForm.style.display = 'none';
       document.getElementById('ticketTitle').value = '';
       document.getElementById('ticketDescription').value = '';
-      ticketForm.style.display = 'none';
     }
+
+    function renderTickets() {
+      ticketList.innerHTML = '';
+      tickets.forEach(ticket => {
+        const div = document.createElement('div');
+        div.className = 'ticket-item';
+        div.innerHTML = `
+          <strong>${ticket.title}</strong>
+          <div class="ticket-buttons">
+            <button class="button" style="padding: 0.5rem 1rem;" onclick="openTicket(${ticket.id})">Open</button>
+            <button class="button" style="padding: 0.5rem 1rem; background-color: #ef4444;" onclick="deleteTicket(${ticket.id})">Delete</button>
+          </div>
+        `;
+        ticketList.appendChild(div);
+      });
+    }
+
+    function openTicket(id) {
+      const ticket = tickets.find(t => t.id === id);
+      if (ticket) {
+        detailTitle.textContent = ticket.title;
+        detailDescription.textContent = ticket.description;
+        ticketDetails.style.display = 'flex';
+      }
+    }
+
+    function deleteTicket(id) {
+      if (!confirm('Are you sure you want to delete this ticket?')) return;
+      tickets = tickets.filter(t => t.id !== id);
+      saveTickets();
+      renderTickets();
+      ticketDetails.style.display = 'none';
+    }
+
+    // Init
+    loadTickets();
   </script>
 
 </body>
